@@ -8,7 +8,7 @@ A lightweight Minecraft-like, 3D game engine built from scratch using C++ and Op
 
 ## Features (Current & Planned)
 
-* **Graphics:** Can render efficiently vertices,textures.
+* **Graphics:** Can render efficiently vertices,textures, has TAA.
 * **Windowing & Input:** Both are managed via GLFW, movement is only flying.
 * **World:** Can render a randomly generated collection of cubes in a rectangular prism.
 * **Planned next:** Basic world-gen(actually generate world as the player is flying), breaking, placing blocks.
@@ -41,3 +41,19 @@ This project is built using **Visual Studio** on Windows. All necessary dependen
 3. **Build and Run:**
    - Set your build configuration to **Debug** or **Release** (usually `x64`).
    - Press **F5** (or click the *Local Windows Debugger* button) to compile and launch the voxel engine!
+
+## Photos and tests:
+
+Hardware: 
+GPU: Nvidia GeForce RTX 4070 SUPER
+CPU: AMD Ryzen 5 7600X
+RAM: 32 GB
+          
+10x10x10 cube:
+<img width="2559" height="1439" alt="10x10x10" src="https://github.com/user-attachments/assets/cffa177c-41d8-48cc-a60a-14ac7172c766" />
+RAM usage: 600 MB
+
+100x100x100 cube:
+<img width="2559" height="1439" alt="100x100x100" src="https://github.com/user-attachments/assets/62cb4abc-bd9c-4e44-bd13-ad2e3df9b13d" />
+RAM usage: 10 GB
+
