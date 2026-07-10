@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Classes">
+      <UniqueIdentifier>{6c43d76c-1954-4557-b7cf-a4ea7686cac4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\OpenGL">
+      <UniqueIdentifier>{f506a6c4-9aef-4f04-8518-b32abfbf963a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game">
+      <UniqueIdentifier>{02a8f65b-aba0-4566-be0f-4924e3970660}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\Game">
+      <UniqueIdentifier>{65e6a78b-fef3-49f3-bfbb-6f6526541810}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\OpenGL">
+      <UniqueIdentifier>{d8fc4968-5bdd-42d6-ba25-49326408b3a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders">
+      <UniqueIdentifier>{d09b4ace-066b-4bfe-90df-723f88a1f722}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\TAA">
+      <UniqueIdentifier>{c4b85e82-a115-41a4-a3d9-20590d4a746b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\UI">
+      <UniqueIdentifier>{fd886a8a-ee0f-4190-81da-cf6fef2aa50c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\UI\Text">
+      <UniqueIdentifier>{caf8cac2-c6f9-41b4-80fe-6f6a624e97f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\UI\HUD">
+      <UniqueIdentifier>{b256a733-f2ad-4ee3-a150-778e2bdd46a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Rendering">
+      <UniqueIdentifier>{d71d9e1f-62e5-4482-91cd-6dd3415a3ba3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Rendering\Screen">
+      <UniqueIdentifier>{070b7d7c-b72d-4496-bbc7-c24df8980df6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Rendering\FragmentStuff">
+      <UniqueIdentifier>{17306cc2-029c-4359-ad05-d9649546640f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Rendering\Outline">
+      <UniqueIdentifier>{7d2ee5ae-fe2e-411a-ba8d-f48e73438c29}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="glad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Buffers.cpp">
+      <Filter>Source Files\Classes\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Camera.cpp">
+      <Filter>Source Files\Classes\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Framebuffer.cpp">
+      <Filter>Source Files\Classes\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Player.cpp">
+      <Filter>Source Files\Classes\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Chunk.cpp">
+      <Filter>Source Files\Classes\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Renderer.cpp">
+      <Filter>Source Files\Classes\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Shader.cpp">
+      <Filter>Source Files\Classes\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Texture.cpp">
+      <Filter>Source Files\Classes\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\TextureArray.cpp">
+      <Filter>Source Files\Classes\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UI.cpp">
+      <Filter>Source Files\Classes\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\World.cpp">
+      <Filter>Source Files\Classes\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Header\Settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Chunk.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Player.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\World.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Buffers.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Camera.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Framebuffer.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Renderer.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Shader.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Texture.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\TextureArray.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\UI.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\frustumCulling.comp">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\Rendering\Everything\fragmentShader.frag">
+      <Filter>Resource Files\Shaders\Rendering\FragmentStuff</Filter>
+    </None>
+    <None Include="Shaders\Rendering\Everything\vertexShader.vert">
+      <Filter>Resource Files\Shaders\Rendering\FragmentStuff</Filter>
+    </None>
+    <None Include="Shaders\Rendering\Screen\screenFragment.frag">
+      <Filter>Resource Files\Shaders\Rendering\Screen</Filter>
+    </None>
+    <None Include="Shaders\Rendering\Screen\screenVertex.vert">
+      <Filter>Resource Files\Shaders\Rendering\Screen</Filter>
+    </None>
+    <None Include="Shaders\UI\HUD\hudfragment.frag">
+      <Filter>Resource Files\Shaders\UI\HUD</Filter>
+    </None>
+    <None Include="Shaders\UI\HUD\hudVertex.vert">
+      <Filter>Resource Files\Shaders\UI\HUD</Filter>
+    </None>
+    <None Include="Shaders\UI\Text\textFragment.frag">
+      <Filter>Resource Files\Shaders\UI\Text</Filter>
+    </None>
+    <None Include="Shaders\UI\Text\textVertex.vert">
+      <Filter>Resource Files\Shaders\UI\Text</Filter>
+    </None>
+    <None Include="Shaders\TAA\taaVertex.vert">
+      <Filter>Resource Files\Shaders\TAA</Filter>
+    </None>
+    <None Include="Shaders\Rendering\Outline\outlineFragment.frag">
+      <Filter>Resource Files\Shaders\Rendering\Outline</Filter>
+    </None>
+    <None Include="Shaders\Rendering\Outline\outlineVertex.vert">
+      <Filter>Resource Files\Shaders\Rendering\Outline</Filter>
+    </None>
+    <None Include="Shaders\TAA\taaFragment.frag">
+      <Filter>Resource Files\Shaders\TAA</Filter>
+    </None>
+  </ItemGroup>
+</Project>

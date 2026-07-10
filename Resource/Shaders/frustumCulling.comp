@@ -1,0 +1,76 @@
+#version 460 core
+layout(local_size_x = 64) in;
+
+struct ChunkInput {
+    vec4 worldPos;
+    uint facesCount;
+    uint faceOffset;
+    uint pad[2];
+};
+
+struct DrawCommand {
+    uint count;
+    uint instanceCount;
+    uint firstVertex;
+    uint baseInstance;
+};
+
+layout(std430,binding = 0) buffer inputBuffer
+{
+    ChunkInput chunks[];
+};
+
+layout(std430,binding = 1) buffer outputBuffer
+{
+    DrawCommand commands[];
+};
+
+layout(std430,binding = 2) buffer countBuffer
+{
+    uint count;
+};
+
+layout(std430,binding = 4) buffer mappingBuffer
+{
+    uint visibleChunksId[];
+};
+
+uniform mat4 view;
+uniform float frustrumX;
+uniform float frustrumY;
+uniform float far_plane;
+uniform float near_plane;
+uniform float cosx;
+uniform float cosy;
+
+void main()
+{
+    uint id = gl_GlobalInvocationID.x;
+    if(id >= chunks.length()) return;
+    
+    const float SCALE = 1.0f;
+
+    vec3 localCenter = vec3(8.0f, 8.0f, 8.0f);
+
+    vec3 worldCenter = (chunks[id].worldPos.xyz + localCenter) * SCALE;
+
+    vec4 pos = view * vec4(worldCenter, 1.0f);
+    float z = pos.z;
+
+    float actualRadius = 13.87f*SCALE;
+    if(z - actualRadius > (-near_plane)) return;
+    if(z + actualRadius < (-far_plane)) return;
+
+    float xlimit = (-z) * frustrumX + actualRadius / cosx;
+    if (abs(pos.x) > xlimit) return;
+    float ylimit = (-z) * frustrumY + actualRadius / cosy;
+    if (abs(pos.y) > ylimit) return;
+
+    uint idx = atomicAdd(count,1);
+    visibleChunksId[idx] = id;
+    commands[idx].count = 6;
+    commands[idx].instanceCount = chunks[id].facesCount;
+    commands[idx].firstVertex = 0;
+    commands[idx].baseInstance = chunks[id].faceOffset;
+}
+
