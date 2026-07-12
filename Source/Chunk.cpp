@@ -2,7 +2,7 @@
 
 static std::random_device rd;
 thread_local std::mt19937 gen(rd());
-thread_local std::uniform_int_distribution<> distr(6,8);
+thread_local std::uniform_int_distribution<> distr(0,1);
 Chunk::Chunk(int placeholderGenerateChunkNormal)
 {
 	// Generation

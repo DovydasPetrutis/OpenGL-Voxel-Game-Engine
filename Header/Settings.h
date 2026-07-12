@@ -7,9 +7,9 @@ class Settings
 public:
 	static inline bool CAS = true;
 
-	static inline const int CHUNK_COUNT_X = 10;
-	static inline const int CHUNK_COUNT_Y = 10;
-	static inline const int CHUNK_COUNT_Z = 10;
+	static inline const int CHUNK_COUNT_X = 2;
+	static inline const int CHUNK_COUNT_Y = 2;
+	static inline const int CHUNK_COUNT_Z = 2;
 	static inline const int CHUNK_ORDER = std::ceil(std::log2(std::max(std::max(CHUNK_COUNT_X, CHUNK_COUNT_Y), CHUNK_COUNT_Z)));
 	static inline const int BLOCK_COUNT_X = (CHUNK_COUNT_X / 2) * 16;
 	static inline const int BLOCK_COUNT_Y = (CHUNK_COUNT_Y / 2) * 16;
@@ -33,5 +33,7 @@ public:
 	// Debug
 	static inline float outlineScale = 0.00f;
 	static inline float outlineThickness = 0.015f;
+
+	static inline const int RENDER_DISTANCE = 8;
 };
 

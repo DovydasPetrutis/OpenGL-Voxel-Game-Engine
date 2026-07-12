@@ -1,4 +1,7 @@
 #include "World.h"
+#include "Player.h"
+
+
 void World::init()
 {
 
@@ -8,12 +11,12 @@ void World::init()
         {
             for (int k = -Settings::CHUNK_COUNT_X / 2; k < Settings::CHUNK_COUNT_X / 2; k++)
             {
-                chunks[Utils::xyz_to_hilbert3d(k, j, i, Settings::CHUNK_ORDER)] = Chunk(k);
+                chunks.emplace(Utils::xyz_to_hilbert3d(k, j, i, Settings::CHUNK_ORDER), Chunk(k));
             }
         }
     }
 
-    chunk_face_culling(chunks, faceCoordsandData);
+    chunk_face_culling();
 
     chunkComputeData.resize(chunks.size());
 
@@ -32,10 +35,11 @@ void World::init()
             }
         }
     }
+    previousPlayerPos = glm::vec3(0.0f);
 
 }
 
-void World::chunk_face_culling(std::unordered_map<uint64_t, Chunk>& chunks, std::vector<uint32_t>& faceCoordsandData)
+void World::chunk_face_culling()
 {
     int32_t chunkCount = chunks.size();
     const int32_t x = Settings::CHUNK_COUNT_X;
@@ -140,33 +144,86 @@ void World::generateFaces(Chunk& data, std::vector<uint32_t>& allFaces, Chunk* f
     }
 }
 
-Chunk World::returnChunk(int xBlock, int yBlock, int zBlock)
+void World::generateChunks(Player& player)
 {
+    if (static_cast<int>(player.pos.x) != previousPlayerPos.x || static_cast<int>(player.pos.y) != previousPlayerPos.y || static_cast<int>(player.pos.z) != previousPlayerPos.z) // check if moved
+    {
+        float maxRadius = Settings::RENDER_DISTANCE;
+        for (int z = 0; z < maxRadius;z++)
+        {
+            for (int y = 0; y < maxRadius;y++)
+            {
+                for (int x = 0; x < maxRadius;x++)
+                {
+                    float radius = x * x + y * y + z * z;
+                    if (radius > maxRadius) continue;
 
+                }
+            }
+        }
+
+        // Set the new values
+        previousPlayerPos.x = static_cast<int>(player.pos.x); 
+        previousPlayerPos.y = static_cast<int>(player.pos.y);
+        previousPlayerPos.z = static_cast<int>(player.pos.z);
+    }
+}
+
+
+Chunk* World::returnChunkWithBlockCoords(int xBlock, int yBlock, int zBlock)
+{
+    /*
     if ((xBlock >= Settings::BLOCK_COUNT_X || xBlock < -Settings::BLOCK_COUNT_X) || (yBlock >= Settings::BLOCK_COUNT_Y || yBlock < -Settings::BLOCK_COUNT_Y) || (zBlock >= Settings::BLOCK_COUNT_Z || zBlock < -Settings::BLOCK_COUNT_Z))
     {
         std::cout << "Out of Bounds chunk" << std::endl;
         return Chunk();
     }
-
+    */
     auto floorDiv = [](int a, int b) { return a / b - (a % b != 0 && (a ^ b) < 0); }; //optimisation for dividing with negative values
-    int xChunk = floorDiv(xBlock, 16) + Settings::CHUNK_COUNT_X / 2; // Offset nes pradedame ne nuo 0
-    int yChunk = floorDiv(yBlock, 16) + Settings::CHUNK_COUNT_Y / 2;
-    int zChunk = floorDiv(zBlock, 16) + Settings::CHUNK_COUNT_Z / 2;
-    return chunks[Utils::xyz_to_hilbert3d(xChunk, yChunk, zChunk, Settings::CHUNK_ORDER)];
+    int xChunk = floorDiv(xBlock, 16); // Offset nes pradedame ne nuo 0
+    int yChunk = floorDiv(yBlock, 16);
+    int zChunk = floorDiv(zBlock, 16);
+    try
+    {
+        Chunk* chunk = &chunks.at(Utils::xyz_to_hilbert3d(xChunk, yChunk, zChunk, Settings::CHUNK_ORDER));
+        return chunk;
+    }
+    catch (const std::exception& e)
+    {
+        return nullptr;
+    }
 
+}
+
+Chunk* World::returnChunkPointerWithChunkCoords(int xChunk, int yChunk, int zChunk)
+{
+    try
+    {
+        return &chunks.at(Utils::xyz_to_hilbert3d(xChunk, yChunk, zChunk, Settings::CHUNK_ORDER));
+        
+    }
+    catch (const std::exception& e) // if out of bounds return nullptr
+    {
+        return nullptr;
+    }
 }
 
 int World::returnBlockID(int xBlock, int yBlock, int zBlock)
 {
+    /*
     if ((xBlock >= Settings::BLOCK_COUNT_X || xBlock < -Settings::BLOCK_COUNT_X) || (yBlock >= Settings::BLOCK_COUNT_Y || yBlock < -Settings::BLOCK_COUNT_Y) || (zBlock >= Settings::BLOCK_COUNT_Z || zBlock < -Settings::BLOCK_COUNT_Z))
     {
         return 0;
     }
+    */
+    std::cout << chunks.size() << std::endl;
     int xInChunk = xBlock & 15;
     int yInChunk = yBlock & 15;
     int zInChunk = zBlock & 15;
-    return World::returnChunk(xBlock, yBlock, zBlock).getId(xInChunk, yInChunk, zInChunk);
+    Chunk* chunk = returnChunkWithBlockCoords(xBlock, yBlock, zBlock);
+    if (!chunk) return 0; // treat ungenerated/out-of-range as air
+
+    return chunk->getId(xInChunk, yInChunk, zInChunk);
 }
 
 uint32_t World::packFace(int x, int y, int z, int direction, int id)

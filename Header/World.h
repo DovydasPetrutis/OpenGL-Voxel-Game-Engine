@@ -3,6 +3,8 @@
 #include <unordered_map>
 #include "Chunk.h"
 
+class Player;
+
 struct chunkInput
 {
     glm::vec4 worldPos;
@@ -27,12 +29,16 @@ struct World
     };
     std::vector<uint32_t> faceCoordsandData;
     std::unordered_map<uint64_t, Chunk> chunks;
+    std::vector<Chunk> activeChunks;
     std::vector<chunkInput> chunkComputeData;
+    glm::vec3 previousPlayerPos;
 
     void init();
-    void chunk_face_culling(std::unordered_map<uint64_t, Chunk>& chunks, std::vector<uint32_t>& faceCoordsandData);
+    void chunk_face_culling();
     void generateFaces(Chunk& data, std::vector<uint32_t>& allFaces, Chunk* front, Chunk* back, Chunk* right, Chunk* left, Chunk* top, Chunk* bottom, int index);
-    Chunk returnChunk(int xBlock, int yBlock, int zBlock);
+    void generateChunks(Player &player);
+    Chunk* returnChunkWithBlockCoords(int xBlock, int yBlock, int zBlock);
+    Chunk* returnChunkPointerWithChunkCoords(int xChunk, int yChunk, int zChunk);
     int returnBlockID(int xBlock, int yBlock, int zBlock);
     uint32_t packFace(int x, int y, int z, int direction, int id);
 };

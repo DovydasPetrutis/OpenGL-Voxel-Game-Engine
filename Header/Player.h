@@ -1,10 +1,12 @@
 #pragma once
 #define GLM_ENABLE_EXPERIMENTAL
-#include "World.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/hash.hpp>
+#include "Camera.h"
+
+class World;
 
 class Player
 {
