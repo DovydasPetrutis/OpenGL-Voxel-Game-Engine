@@ -1,6 +1,11 @@
 #include "World.h"
 #include "Player.h"
 
+void World::generateChunk(uint32_t x, uint32_t y, uint32_t z)
+{
+    chunks.emplace(Utils::xyz_to_hilbert3d(x, y, z, Settings::CHUNK_ORDER), Chunk(x));
+}
+
 
 void World::init()
 {
@@ -11,7 +16,7 @@ void World::init()
         {
             for (int k = -Settings::CHUNK_COUNT_X / 2; k < Settings::CHUNK_COUNT_X / 2; k++)
             {
-                chunks.emplace(Utils::xyz_to_hilbert3d(k, j, i, Settings::CHUNK_ORDER), Chunk(k));
+                generateChunk(k,j,i);
             }
         }
     }
@@ -94,6 +99,110 @@ void World::chunk_face_culling()
     }
 }
 
+
+void World::chunk_face_culling(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk)
+{
+    Chunk* chunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk, zChunk,true);
+    if (chunk == nullptr)
+    {
+        std::cout << "Chunk not Found: X: " << xChunk << " Y: " << yChunk << " Z: " << zChunk << '\n';
+        return;
+    }
+    Chunk* rightChunk = World::returnChunkPointerWithChunkCoords(xChunk + 1, yChunk, zChunk, true);
+    Chunk* leftChunk = World::returnChunkPointerWithChunkCoords(xChunk - 1, yChunk, zChunk, true);
+    Chunk* topChunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk + 1, zChunk, true);
+    Chunk* bottomChunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk - 1, zChunk, true);
+    Chunk* frontChunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk, zChunk + 1, true);
+    Chunk* behindChunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk, zChunk - 1, true);
+    // Optimisation, preocmpute bool values
+
+    for (uint8_t z = 0; z < 16;z++)
+    {
+        for (uint8_t y = 0; y < 16;y++)
+        {
+            for (uint8_t x = 0; x < 16;x++)
+            {
+                uint16_t id = chunk->getId(x, y, z);
+                // Front 
+                {
+                    bool showFace = false;
+                    if (z != 0) showFace = (chunk->getId(x, y, z - 1) == 0);
+                    else        showFace = (frontChunk->getId(x, y, 15) == 0);
+
+                    if (showFace)
+                    {
+                        faceCoordsandData.push_back(packFace(x, y, z, 0, textureMap[id][0]));
+                        chunk->faceCount += 1;
+                    }
+                }
+                // Back 
+                {
+                    bool showFace = false;
+                    if (z != 15) showFace = (chunk->getId(x, y, z + 1) == 0);
+                    else         showFace = (behindChunk->getId(x, y, 0) == 0);
+
+                    if (showFace)
+                    {
+                        faceCoordsandData.push_back(packFace(x, y, z, 1, textureMap[id][1]));
+                        chunk->faceCount += 1;
+                    }
+                }
+                // Right
+                {
+                    bool showFace = false;
+                    if (x != 15) showFace = (chunk->getId(x + 1, y, z) == 0);
+                    else         showFace = (rightChunk->getId(0, y, z) == 0);
+
+                    if (showFace)
+                    {
+                        faceCoordsandData.push_back(packFace(x, y, z, 2, textureMap[id][2]));
+                        chunk->faceCount += 1;
+                    }
+                }
+                // Left
+                {
+                    bool showFace = false;
+                    if (x != 0) showFace = (chunk->getId(x - 1, y, z) == 0);
+                    else         showFace = (leftChunk->getId(15, y, z) == 0);
+
+                    if (showFace)
+                    {
+                        faceCoordsandData.push_back(packFace(x, y, z, 3, textureMap[id][3]));
+                        chunk->faceCount += 1;
+                    }
+                }
+                // Top
+                {
+                    bool showFace = false;
+                    if (x != 0) showFace = (chunk->getId(x, y + 1, z) == 0);
+                    else         showFace = (topChunk->getId(x, 0, z) == 0);
+
+                    if (showFace)
+                    {
+                        faceCoordsandData.push_back(packFace(x, y, z, 4, textureMap[id][4]));
+                        chunk->faceCount += 1;
+                    }
+                }
+                // Bottom
+                {
+                    bool showFace = false;
+                    if (x != 0) showFace = (chunk->getId(x, y - 1, z) == 0);
+                    else         showFace = (bottomChunk->getId(x, 15, z) == 0);
+
+                    if (showFace)
+                    {
+                        faceCoordsandData.push_back(packFace(x, y, z, 5, textureMap[id][5]));
+                        chunk->faceCount += 1;
+                    }
+                }
+            }
+        }
+    }
+    chunk->faceOffset = faceOffset;
+    faceOffset += chunk->faceCount;
+
+}
+
 void World::generateFaces(Chunk& data, std::vector<uint32_t>& allFaces, Chunk* front, Chunk* back, Chunk* right, Chunk* left, Chunk* top, Chunk* bottom, int index)
 {
     for (uint8_t i = 0; i < 16;i++)
@@ -104,10 +213,6 @@ void World::generateFaces(Chunk& data, std::vector<uint32_t>& allFaces, Chunk* f
             {
                 uint16_t id = data.getId(k, j, i);
                 if (id == 0) continue;
-                glm::vec3 chunkXYZ = Utils::hilbert3d_to_xyz(index, Settings::CHUNK_ORDER);
-                int32_t x = chunkXYZ.x * 16 + k;
-                int32_t y = chunkXYZ.y * 16 + j;
-                int32_t z = chunkXYZ.z * 16 + i;
                 if (((i == 0) && (front == nullptr || front->getId(k, j, 15) == 0)) || (i - 1 >= 0 && data.getId(k, j, i - 1) == 0))
                 {
                     allFaces.push_back(packFace(k, j, i, 0, textureMap[id][0])); // Front
@@ -144,19 +249,23 @@ void World::generateFaces(Chunk& data, std::vector<uint32_t>& allFaces, Chunk* f
     }
 }
 
+
+
 void World::generateChunks(Player& player)
 {
     if (static_cast<int>(player.pos.x) != previousPlayerPos.x || static_cast<int>(player.pos.y) != previousPlayerPos.y || static_cast<int>(player.pos.z) != previousPlayerPos.z) // check if moved
     {
         float maxRadius = Settings::RENDER_DISTANCE;
+        float maxRadiusSquared = maxRadius * maxRadius;
         for (int z = 0; z < maxRadius;z++)
         {
             for (int y = 0; y < maxRadius;y++)
             {
                 for (int x = 0; x < maxRadius;x++)
                 {
-                    float radius = x * x + y * y + z * z;
-                    if (radius > maxRadius) continue;
+                    float radiusSquared = x * x + y * y + z * z;
+                    if (radiusSquared > maxRadiusSquared) continue;
+
 
                 }
             }
@@ -195,16 +304,23 @@ Chunk* World::returnChunkWithBlockCoords(int xBlock, int yBlock, int zBlock)
 
 }
 
-Chunk* World::returnChunkPointerWithChunkCoords(int xChunk, int yChunk, int zChunk)
+Chunk* World::returnChunkPointerWithChunkCoords(int xChunk, int yChunk, int zChunk,bool generateChunkIfNotFound)
 {
     try
     {
         return &chunks.at(Utils::xyz_to_hilbert3d(xChunk, yChunk, zChunk, Settings::CHUNK_ORDER));
-        
     }
     catch (const std::exception& e) // if out of bounds return nullptr
     {
-        return nullptr;
+        if (generateChunkIfNotFound)
+        {
+            World::generateChunk(xChunk, yChunk, zChunk);
+            return &chunks.at(Utils::xyz_to_hilbert3d(xChunk, yChunk, zChunk, Settings::CHUNK_ORDER));
+        }
+        else
+        {
+            return nullptr;
+        }
     }
 }
 

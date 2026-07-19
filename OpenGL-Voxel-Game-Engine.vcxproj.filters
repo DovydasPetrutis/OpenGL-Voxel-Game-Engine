@@ -46,14 +46,14 @@
     <Filter Include="Resource Files\Shaders\Rendering">
       <UniqueIdentifier>{d71d9e1f-62e5-4482-91cd-6dd3415a3ba3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Shaders\Rendering\Screen">
-      <UniqueIdentifier>{070b7d7c-b72d-4496-bbc7-c24df8980df6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files\Shaders\Rendering\FragmentStuff">
       <UniqueIdentifier>{17306cc2-029c-4359-ad05-d9649546640f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resource Files\Shaders\Rendering\Outline">
       <UniqueIdentifier>{7d2ee5ae-fe2e-411a-ba8d-f48e73438c29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Rendering\Outline\Screen">
+      <UniqueIdentifier>{070b7d7c-b72d-4496-bbc7-c24df8980df6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -152,10 +152,10 @@
       <Filter>Resource Files\Shaders\Rendering\FragmentStuff</Filter>
     </None>
     <None Include="Shaders\Rendering\Screen\screenFragment.frag">
-      <Filter>Resource Files\Shaders\Rendering\Screen</Filter>
+      <Filter>Resource Files\Shaders\Rendering\Outline\Screen</Filter>
     </None>
     <None Include="Shaders\Rendering\Screen\screenVertex.vert">
-      <Filter>Resource Files\Shaders\Rendering\Screen</Filter>
+      <Filter>Resource Files\Shaders\Rendering\Outline\Screen</Filter>
     </None>
     <None Include="Shaders\UI\HUD\hudfragment.frag">
       <Filter>Resource Files\Shaders\UI\HUD</Filter>
