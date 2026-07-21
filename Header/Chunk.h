@@ -12,6 +12,7 @@ public:
 	uint16_t idBlocks[4096] = {{0}};
 	uint16_t faceCount = 0;
 	uint32_t faceOffset = 0;
+	uint16_t vectorIndex = 0;
 	Chunk(int placeholderGenerateChunkNormal);
 	int getId(int x, int y, int z);
 	Chunk();

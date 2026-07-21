@@ -29,17 +29,21 @@ struct World
     };
     std::vector<uint32_t> faceCoordsandData;
     std::unordered_map<uint64_t, Chunk> chunks;
-    std::vector<Chunk> activeChunks;
+    std::vector<Chunk*> activeChunks;
     std::vector<chunkInput> chunkComputeData;
     glm::vec3 previousPlayerPos;
     uint64_t faceOffset = 0;
 
+
     void init();
     void chunk_face_culling();
-    void chunk_face_culling(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk);
+    void push_chunk_vertex_data(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk);
+    void delete_chunk_vertex_data(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk);
     void generateFaces(Chunk& data, std::vector<uint32_t>& allFaces, Chunk* front, Chunk* back, Chunk* right, Chunk* left, Chunk* top, Chunk* bottom, int index);
     void generateChunk(uint32_t x,uint32_t y,uint32_t z);
     void generateChunks(Player &player);
+    void activateChunk(int xChunk, int yChunk, int zChunk);
+    void deactivateChunk(int xChunk, int yChunk, int zChunk);
     Chunk* returnChunkWithBlockCoords(int xBlock, int yBlock, int zBlock);
     Chunk* returnChunkPointerWithChunkCoords(int xChunk, int yChunk, int zChunk, bool generateChunkIfNotFound);
     int returnBlockID(int xBlock, int yBlock, int zBlock);

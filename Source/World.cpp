@@ -1,9 +1,15 @@
 #include "World.h"
 #include "Player.h"
 
+// morton code reikia tik vectoriams
+// deactivator ir activator reikia pakeisti kadangi morton reiksia kad vectors ne is eiles
+// pamastyti galbut z order geresnis
+// sutvarkyti unordered map iki galo
+
 void World::generateChunk(uint32_t x, uint32_t y, uint32_t z)
 {
-    chunks.emplace(Utils::xyz_to_hilbert3d(x, y, z, Settings::CHUNK_ORDER), Chunk(x));
+    uint64_t index = x + y * Settings::CHUNK_COUNT_X_REAL + Settings::CHUNK_COUNT_Z_REAL;
+    chunks.emplace(index, Chunk(x));
 }
 
 
@@ -100,7 +106,7 @@ void World::chunk_face_culling()
 }
 
 
-void World::chunk_face_culling(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk)
+void World::push_chunk_vertex_data(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk)
 {
     Chunk* chunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk, zChunk,true);
     if (chunk == nullptr)
@@ -203,6 +209,24 @@ void World::chunk_face_culling(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk
 
 }
 
+void World::delete_chunk_vertex_data(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk)
+{
+    // delete
+    Chunk* chunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk, zChunk, false);
+    if (chunk)
+    {
+        std::cout << "Can't delete chunk vertex data: X: " << xChunk << " Y: " << yChunk << " Z: " << zChunk << '\n';
+    }
+    auto startIt = faceCoordsandData.begin() + chunk->faceOffset;
+    auto endIt = startIt + chunk->faceCount;
+    faceCoordsandData.erase(startIt, endIt);
+    // adjust offset of other chunks
+    for (int i = chunk->vectorIndex + 1; i < activeChunks.size();i++)
+    {
+        chunks[i].faceOffset -= chunk->faceCount;
+    }
+}
+
 void World::generateFaces(Chunk& data, std::vector<uint32_t>& allFaces, Chunk* front, Chunk* back, Chunk* right, Chunk* left, Chunk* top, Chunk* bottom, int index)
 {
     for (uint8_t i = 0; i < 16;i++)
@@ -257,6 +281,9 @@ void World::generateChunks(Player& player)
     {
         float maxRadius = Settings::RENDER_DISTANCE;
         float maxRadiusSquared = maxRadius * maxRadius;
+        int playerChunkX = static_cast<int>(player.pos.x) / 16;
+        int playerChunkY = static_cast<int>(player.pos.y) / 16;
+        int playerChunkZ = static_cast<int>(player.pos.z) / 16;
         for (int z = 0; z < maxRadius;z++)
         {
             for (int y = 0; y < maxRadius;y++)
@@ -265,8 +292,7 @@ void World::generateChunks(Player& player)
                 {
                     float radiusSquared = x * x + y * y + z * z;
                     if (radiusSquared > maxRadiusSquared) continue;
-
-
+                    activateChunk(playerChunkX + x, playerChunkY + y, playerChunkZ + z);
                 }
             }
         }
@@ -276,6 +302,32 @@ void World::generateChunks(Player& player)
         previousPlayerPos.y = static_cast<int>(player.pos.y);
         previousPlayerPos.z = static_cast<int>(player.pos.z);
     }
+}
+
+void World::activateChunk(int xChunk, int yChunk, int zChunk)
+{
+    Chunk* chunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk, zChunk, false);
+    if (!chunk)
+    {
+        std::cout << "Can't activate chunk: " << " X: " << xChunk << " Y: " << yChunk << " Z: " << zChunk << '\n';
+    }
+    chunk->vectorIndex = activeChunks.size();
+    activeChunks.push_back(chunk);
+}
+
+void World::deactivateChunk(int xChunk, int yChunk, int zChunk)
+{
+    // swap and pop method O(1)
+    Chunk* chunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk, zChunk, false);
+    if (!chunk)
+    {
+        std::cout << "Can't deactivate chunk: " << " X: " << xChunk << " Y: " << yChunk << " Z: " << zChunk << '\n';
+    }
+    World::delete_chunk_vertex_data(xChunk, yChunk, zChunk);
+    Chunk* lastChunk = activeChunks.back();
+    activeChunks[chunk->vectorIndex] = lastChunk;
+    lastChunk->vectorIndex = chunk->vectorIndex;
+    activeChunks.pop_back();
 }
 
 
