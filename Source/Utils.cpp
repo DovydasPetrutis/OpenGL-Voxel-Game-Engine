@@ -76,72 +76,38 @@ uint16_t Utils::MortonEncode16t(uint16_t x, uint16_t y, uint16_t z)
     return spreadBits(x) | (spreadBits(y) << 1) | (spreadBits(z) << 2);
 }
 
-uint64_t Utils::xyz_to_hilbert3d(uint32_t x, uint32_t y, uint32_t z, int order)
+
+
+uint32_t Utils::xyz_to_Morton32t(uint16_t x, uint16_t y, uint16_t z)
 {
-    uint64_t index = 0;
+    auto splitBy2 = [](uint32_t a) -> uint64_t {
+        uint64_t v = a & 0x1FFFFFULL; // Clamp to 21 bits
+        v = (v | (v << 32)) & 0x001F00000000FFFFULL;
+        v = (v | (v << 16)) & 0x001F0000FF0000FFULL;
+        v = (v | (v << 8)) & 0x010F00F00F00F00FULL;
+        v = (v | (v << 4)) & 0x10C30C30C30C30C3ULL;
+        v = (v | (v << 2)) & 0x1249249249249249ULL;
+        return v;
+        };
 
-    for (int s = order - 1; s >= 0; --s) {
-        uint32_t rx = (x >> s) & 1;
-        uint32_t ry = (y >> s) & 1;
-        uint32_t rz = (z >> s) & 1;
-
-        uint32_t octant = (rx << 2) | ((rx ^ ry) << 1) | (rx ^ ry ^ rz);
-
-        index = (index << 3) | octant;
-
-        if (rz == 0) {
-            if (ry == 0) {
-                if (rx == 1) {
-                    x = ~x;
-                    y = ~y;
-                }
-            }
-            else {
-                uint32_t t = x; x = y; y = t;
-            }
-        }
-        else {
-            uint32_t t = x; x = ~z; z = ~t;
-        }
-    }
-    return index;
+    return splitBy2(x) | (splitBy2(y) << 1) | (splitBy2(z) << 2);
 }
 
-glm::ivec3 Utils::hilbert3d_to_xyz(uint64_t index, int order)
+glm::ivec3 Utils::Morton32t_to_xyz(uint32_t m)
 {
-    uint32_t x = 0, y = 0, z = 0;
+    auto compactBy2 = [](uint64_t v) -> uint32_t {
+        v &= 0x1249249249249249ULL;
+        v = (v | (v >> 2)) & 0x10C30C30C30C30C3ULL;
+        v = (v | (v >> 4)) & 0x010F00F00F00F00FULL;
+        v = (v | (v >> 8)) & 0x001F0000FF0000FFULL;
+        v = (v | (v >> 16)) & 0x001F00000000FFFFULL;
+        v = (v | (v >> 32)) & 0x00000000001FFFFFULL;
+        return static_cast<uint32_t>(v);
+        };
 
-    for (int s = order - 1; s >= 0; --s) {
-        uint32_t octant = static_cast<uint32_t>((index >> (s * 3)) & 7);
-
-        uint32_t rx = (octant >> 2) & 1;
-        uint32_t ry = ((octant >> 1) ^ rx) & 1;
-        uint32_t rz = (octant ^ (octant >> 1)) & 1;
-
-        x |= (rx << s);
-        y |= (ry << s);
-        z |= (rz << s);
-
-        if (rz == 0) {
-            if (ry == 0) {
-                if (rx == 1) {
-                    x = ~x;
-                    y = ~y;
-                }
-            }
-            else {
-                uint32_t t = x; x = y; y = t;
-            }
-        }
-        else {
-            uint32_t t = x; x = ~z; z = ~t;
-        }
-    }
-
-    uint32_t world_offset = 1U << (order - 1);
-    glm::ivec3 chunk_pos;
-    chunk_pos.x = static_cast<int32_t>(x) - static_cast<int32_t>(world_offset);
-    chunk_pos.y = static_cast<int32_t>(y) - static_cast<int32_t>(world_offset);
-    chunk_pos.z = static_cast<int32_t>(z) - static_cast<int32_t>(world_offset);
-    return chunk_pos;
+    return {
+        compactBy2(m),
+        compactBy2(m >> 1),
+        compactBy2(m >> 2)
+    };
 }

@@ -31,7 +31,7 @@ struct World
     std::unordered_map<uint64_t, Chunk> chunks;
     std::vector<Chunk*> activeChunks;
     std::vector<chunkInput> chunkComputeData;
-    glm::vec3 previousPlayerPos;
+    glm::vec3 previousPlayerChunkPos = glm::vec3(0.0f);
     uint64_t faceOffset = 0;
 
 

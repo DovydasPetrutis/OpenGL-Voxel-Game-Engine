@@ -8,7 +8,7 @@
 
 void World::generateChunk(uint32_t x, uint32_t y, uint32_t z)
 {
-    uint64_t index = x + y * Settings::CHUNK_COUNT_X_REAL + Settings::CHUNK_COUNT_Z_REAL;
+    uint64_t index = x + y * Settings::CHUNK_COUNT_X_REAL + Settings::CHUNK_COUNT_X_REAL * Settings::CHUNK_COUNT_Y_REAL * z;
     chunks.emplace(index, Chunk(x));
 }
 
@@ -38,7 +38,7 @@ void World::init()
         {
             for (int k = -Settings::CHUNK_COUNT_X / 2; k < Settings::CHUNK_COUNT_X / 2; k++)
             {
-                const Chunk& chunk = chunks.at(Utils::xyz_to_hilbert3d(k, j, i, Settings::CHUNK_ORDER));
+                const Chunk& chunk = chunks.at(Utils::xyz_to_Morton32t(k, j, i));
                 chunkComputeData[computeDataIndex].worldPos = glm::vec4(k * 16.0f, j * 16.0f, i * 16.0f, 1.0f);
                 chunkComputeData[computeDataIndex].faceCount = chunk.faceCount;
                 chunkComputeData[computeDataIndex].faceOffset = chunk.faceOffset;
@@ -52,11 +52,12 @@ void World::init()
 
 void World::chunk_face_culling()
 {
+    /*
     int32_t chunkCount = chunks.size();
     const int32_t x = Settings::CHUNK_COUNT_X;
     const int32_t y = Settings::CHUNK_COUNT_Y;
     const int32_t z = Settings::CHUNK_COUNT_Z;
-    auto index = [](int cx, int cy, int cz) { return Utils::xyz_to_hilbert3d(cx, cy, cz, Settings::CHUNK_ORDER);};
+    auto index = [](int cx, int cy, int cz) { return Utils::xyz_to_Morton32t(cx, cy, cz);};
 
     // Each chunk gets its own face buffer — no shared writes
     const size_t hilbertSize = size_t(1) << (3 * Settings::CHUNK_ORDER);
@@ -85,7 +86,7 @@ void World::chunk_face_culling()
             }
         }
     }
-
+    */
     // --- SEQUENTIAL: merge + compute cumulative faceOffset ---
     int32_t faceOffset = 0;
     for (int i = -z / 2; i < z / 2; i++)
@@ -213,7 +214,7 @@ void World::delete_chunk_vertex_data(uint32_t xChunk, uint32_t yChunk, uint32_t 
 {
     // delete
     Chunk* chunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk, zChunk, false);
-    if (chunk)
+    if (!chunk)
     {
         std::cout << "Can't delete chunk vertex data: X: " << xChunk << " Y: " << yChunk << " Z: " << zChunk << '\n';
     }
@@ -273,17 +274,15 @@ void World::generateFaces(Chunk& data, std::vector<uint32_t>& allFaces, Chunk* f
     }
 }
 
-
+// idejos kaip efektyviau activatinti, deaktyvatinti chunks
 
 void World::generateChunks(Player& player)
 {
-    if (static_cast<int>(player.pos.x) != previousPlayerPos.x || static_cast<int>(player.pos.y) != previousPlayerPos.y || static_cast<int>(player.pos.z) != previousPlayerPos.z) // check if moved
+    if (static_cast<int>(player.pos.x / 16) != previousPlayerChunkPos.x || static_cast<int>(player.pos.y / 16) != previousPlayerChunkPos.y || static_cast<int>(player.pos.z / 16) != previousPlayerChunkPos.z) // check if moved
     {
         float maxRadius = Settings::RENDER_DISTANCE;
         float maxRadiusSquared = maxRadius * maxRadius;
-        int playerChunkX = static_cast<int>(player.pos.x) / 16;
-        int playerChunkY = static_cast<int>(player.pos.y) / 16;
-        int playerChunkZ = static_cast<int>(player.pos.z) / 16;
+        glm::ivec3 playerChunk = glm::ivec3(static_cast<int>(player.pos.x) / 16, static_cast<int>(player.pos.y) / 16, static_cast<int>(player.pos.z) / 16);
         for (int z = 0; z < maxRadius;z++)
         {
             for (int y = 0; y < maxRadius;y++)
@@ -292,27 +291,34 @@ void World::generateChunks(Player& player)
                 {
                     float radiusSquared = x * x + y * y + z * z;
                     if (radiusSquared > maxRadiusSquared) continue;
-                    activateChunk(playerChunkX + x, playerChunkY + y, playerChunkZ + z);
+                    activateChunk(playerChunk.x + x, playerChunk.y + y, playerChunk.z + z);
                 }
             }
         }
 
         // Set the new values
-        previousPlayerPos.x = static_cast<int>(player.pos.x); 
-        previousPlayerPos.y = static_cast<int>(player.pos.y);
-        previousPlayerPos.z = static_cast<int>(player.pos.z);
+        previousPlayerChunkPos.x = playerChunk.x; 
+        previousPlayerChunkPos.y = playerChunk.y;
+        previousPlayerChunkPos.z = playerChunk.z;
     }
 }
 
 void World::activateChunk(int xChunk, int yChunk, int zChunk)
 {
-    Chunk* chunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk, zChunk, false);
+    Chunk* chunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk, zChunk, true);
     if (!chunk)
     {
         std::cout << "Can't activate chunk: " << " X: " << xChunk << " Y: " << yChunk << " Z: " << zChunk << '\n';
+        return;
+    }
+    if (chunk->isActive == true)
+    {
+        std::cout << "The chunk is already active: " << " X: " << xChunk << " Y: " << yChunk << " Z: " << zChunk << '\n';
+        return;
     }
     chunk->vectorIndex = activeChunks.size();
     activeChunks.push_back(chunk);
+    chunk->isActive = true;
 }
 
 void World::deactivateChunk(int xChunk, int yChunk, int zChunk)
@@ -323,11 +329,17 @@ void World::deactivateChunk(int xChunk, int yChunk, int zChunk)
     {
         std::cout << "Can't deactivate chunk: " << " X: " << xChunk << " Y: " << yChunk << " Z: " << zChunk << '\n';
     }
+    if (chunk->isActive == false)
+    {
+        std::cout << "The chunk is already deaactivated: " << " X: " << xChunk << " Y: " << yChunk << " Z: " << zChunk << '\n';
+        return;
+    }
     World::delete_chunk_vertex_data(xChunk, yChunk, zChunk);
     Chunk* lastChunk = activeChunks.back();
     activeChunks[chunk->vectorIndex] = lastChunk;
     lastChunk->vectorIndex = chunk->vectorIndex;
     activeChunks.pop_back();
+    chunk->isActive = false;
 }
 
 
@@ -346,7 +358,7 @@ Chunk* World::returnChunkWithBlockCoords(int xBlock, int yBlock, int zBlock)
     int zChunk = floorDiv(zBlock, 16);
     try
     {
-        Chunk* chunk = &chunks.at(Utils::xyz_to_hilbert3d(xChunk, yChunk, zChunk, Settings::CHUNK_ORDER));
+        Chunk* chunk = &chunks.at(Utils::xyz_to_Morton32t(xChunk, yChunk, zChunk));
         return chunk;
     }
     catch (const std::exception& e)
@@ -360,14 +372,14 @@ Chunk* World::returnChunkPointerWithChunkCoords(int xChunk, int yChunk, int zChu
 {
     try
     {
-        return &chunks.at(Utils::xyz_to_hilbert3d(xChunk, yChunk, zChunk, Settings::CHUNK_ORDER));
+        return &chunks.at(Utils::xyz_to_Morton32t(xChunk, yChunk, zChunk));
     }
     catch (const std::exception& e) // if out of bounds return nullptr
     {
         if (generateChunkIfNotFound)
         {
             World::generateChunk(xChunk, yChunk, zChunk);
-            return &chunks.at(Utils::xyz_to_hilbert3d(xChunk, yChunk, zChunk, Settings::CHUNK_ORDER));
+            return &chunks.at(Utils::xyz_to_Morton32t(xChunk, yChunk, zChunk));
         }
         else
         {

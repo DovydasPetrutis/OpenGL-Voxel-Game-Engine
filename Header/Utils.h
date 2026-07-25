@@ -22,6 +22,6 @@ public:
 	static void change_frustrum(ComputeShader& cullProgram, Shader& projProgram, Camera& camera);
 	static void strafeMoveCheck(GLFWwindow* window, GLenum sec1, GLenum sec2, const glm::vec3& direc, float deltaTime,Camera& camera);
 	static uint16_t MortonEncode16t(uint16_t x, uint16_t y, uint16_t z);
-	static uint64_t xyz_to_hilbert3d(uint32_t x, uint32_t y, uint32_t z, int order);
-	static glm::ivec3 hilbert3d_to_xyz(uint64_t index, int order);
+	static uint32_t xyz_to_Morton32t(uint16_t x, uint16_t y, uint16_t z);
+	static glm::ivec3 Morton32t_to_xyz(uint32_t m);
 };

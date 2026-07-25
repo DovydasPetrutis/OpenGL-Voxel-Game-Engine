@@ -13,6 +13,7 @@ public:
 	uint16_t faceCount = 0;
 	uint32_t faceOffset = 0;
 	uint16_t vectorIndex = 0;
+	bool isActive = false;
 	Chunk(int placeholderGenerateChunkNormal);
 	int getId(int x, int y, int z);
 	Chunk();
