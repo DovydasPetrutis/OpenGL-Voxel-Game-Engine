@@ -1,21 +1,20 @@
 #include "World.h"
 #include "Player.h"
 
-// morton code reikia tik vectoriams
-// deactivator ir activator reikia pakeisti kadangi morton reiksia kad vectors ne is eiles
-// pamastyti galbut z order geresnis
-// sutvarkyti unordered map iki galo
+
 
 void World::generateChunk(uint32_t x, uint32_t y, uint32_t z)
 {
     uint64_t index = x + y * Settings::CHUNK_COUNT_X_REAL + Settings::CHUNK_COUNT_X_REAL * Settings::CHUNK_COUNT_Y_REAL * z;
     chunks.emplace(index, Chunk(x));
+    chunks.at(index).id = index;
 }
 
-
+// problem su ssbos kolkas
 void World::init()
 {
-
+    int chunkVolume = 4 * Settings::RENDER_DISTANCE * Settings::RENDER_DISTANCE * Settings::RENDER_DISTANCE / 3;
+    /*
     for (int i = -Settings::CHUNK_COUNT_Z / 2; i < Settings::CHUNK_COUNT_Z / 2; i++)
     {
         for (int j = -Settings::CHUNK_COUNT_Y / 2; j < Settings::CHUNK_COUNT_Y / 2; j++)
@@ -26,85 +25,9 @@ void World::init()
             }
         }
     }
-
-    chunk_face_culling();
-
-    chunkComputeData.resize(chunks.size());
-
-    int computeDataIndex = 0;
-    for (int i = -Settings::CHUNK_COUNT_Z / 2; i < Settings::CHUNK_COUNT_Z / 2; i++)
-    {
-        for (int j = -Settings::CHUNK_COUNT_Y / 2; j < Settings::CHUNK_COUNT_Y / 2; j++)
-        {
-            for (int k = -Settings::CHUNK_COUNT_X / 2; k < Settings::CHUNK_COUNT_X / 2; k++)
-            {
-                const Chunk& chunk = chunks.at(Utils::xyz_to_Morton32t(k, j, i));
-                chunkComputeData[computeDataIndex].worldPos = glm::vec4(k * 16.0f, j * 16.0f, i * 16.0f, 1.0f);
-                chunkComputeData[computeDataIndex].faceCount = chunk.faceCount;
-                chunkComputeData[computeDataIndex].faceOffset = chunk.faceOffset;
-                computeDataIndex++;
-            }
-        }
-    }
-    previousPlayerPos = glm::vec3(0.0f);
-
-}
-
-void World::chunk_face_culling()
-{
-    /*
-    int32_t chunkCount = chunks.size();
-    const int32_t x = Settings::CHUNK_COUNT_X;
-    const int32_t y = Settings::CHUNK_COUNT_Y;
-    const int32_t z = Settings::CHUNK_COUNT_Z;
-    auto index = [](int cx, int cy, int cz) { return Utils::xyz_to_Morton32t(cx, cy, cz);};
-
-    // Each chunk gets its own face buffer — no shared writes
-    const size_t hilbertSize = size_t(1) << (3 * Settings::CHUNK_ORDER);
-    std::vector<std::vector<uint32_t>> localFaces(hilbertSize);
-
-    // --- PARALLEL: generate faces per chunk ---
-#pragma omp parallel for collapse(3) schedule(dynamic)
-    for (int i = -z / 2; i < z / 2; i++)
-    {
-        for (int j = -y / 2; j < y / 2; j++)
-        {
-            for (int k = -x / 2; k < x / 2; k++)
-            {
-                auto chunkIndex = index(k, j, i);
-                Chunk* chunk = &chunks.at(chunkIndex);
-
-                Chunk* front = (i > -z / 2) ? &chunks.at(index(k, j, i - 1)) : nullptr;
-                Chunk* back = (i < z / 2 - 1) ? &chunks.at(index(k, j, i + 1)) : nullptr;
-                Chunk* right = (k < x / 2 - 1) ? &chunks.at(index(k + 1, j, i)) : nullptr;
-                Chunk* left = (k > -x / 2) ? &chunks.at(index(k - 1, j, i)) : nullptr;
-                Chunk* top = (j < y / 2 - 1) ? &chunks.at(index(k, j + 1, i)) : nullptr;
-                Chunk* bottom = (j > -y / 2) ? &chunks.at(index(k, j - 1, i)) : nullptr;
-
-                // Writes only to localFaces[index] — thread-safe
-                generateFaces(*chunk, localFaces[index(k, j, i)], front, back, right, left, top, bottom, chunkIndex);
-            }
-        }
-    }
     */
-    // --- SEQUENTIAL: merge + compute cumulative faceOffset ---
-    int32_t faceOffset = 0;
-    for (int i = -z / 2; i < z / 2; i++)
-    {
-        for (int j = -y / 2; j < y / 2; j++)
-        {
-            for (int k = -x / 2; k < x / 2; k++)
-            {
-                uint64_t idx = index(k, j, i);
-                auto& chunk = chunks.at(idx);
-                chunk.faceOffset = faceOffset;
-                faceOffset += chunk.faceCount;
-                faceCoordsandData.insert(faceCoordsandData.end(),
-                    localFaces[idx].begin(), localFaces[idx].end());
-            }
-        }
-    }
 }
+
 
 
 void World::push_chunk_vertex_data(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk)
@@ -210,6 +133,12 @@ void World::push_chunk_vertex_data(uint32_t xChunk, uint32_t yChunk, uint32_t zC
 
 }
 
+void World::push_chunk_compute_data(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk)
+{
+    const Chunk* chunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk, zChunk, false);
+    chunkComputeData.emplace_back(glm::vec4(xChunk * 16.0f, yChunk * 16.0f, zChunk * 16.0f, 1.0f), chunk->faceCount, chunk->faceOffset);
+}
+
 void World::delete_chunk_vertex_data(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk)
 {
     // delete
@@ -226,6 +155,13 @@ void World::delete_chunk_vertex_data(uint32_t xChunk, uint32_t yChunk, uint32_t 
     {
         chunks[i].faceOffset -= chunk->faceCount;
     }
+}
+
+void World::delete_chunk_compute_data(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk)
+{
+    const Chunk* chunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk, zChunk, false);
+    chunkComputeData[chunk->vectorIndex] = chunkComputeData.back();
+    activeChunks.pop_back();
 }
 
 void World::generateFaces(Chunk& data, std::vector<uint32_t>& allFaces, Chunk* front, Chunk* back, Chunk* right, Chunk* left, Chunk* top, Chunk* bottom, int index)
@@ -280,19 +216,31 @@ void World::generateChunks(Player& player)
 {
     if (static_cast<int>(player.pos.x / 16) != previousPlayerChunkPos.x || static_cast<int>(player.pos.y / 16) != previousPlayerChunkPos.y || static_cast<int>(player.pos.z / 16) != previousPlayerChunkPos.z) // check if moved
     {
-        float maxRadius = Settings::RENDER_DISTANCE;
-        float maxRadiusSquared = maxRadius * maxRadius;
+        int maxRadius = Settings::RENDER_DISTANCE;
+        int maxRadiusSquared = maxRadius * maxRadius;
         glm::ivec3 playerChunk = glm::ivec3(static_cast<int>(player.pos.x) / 16, static_cast<int>(player.pos.y) / 16, static_cast<int>(player.pos.z) / 16);
+        // acitvate chunks
         for (int z = 0; z < maxRadius;z++)
         {
             for (int y = 0; y < maxRadius;y++)
             {
                 for (int x = 0; x < maxRadius;x++)
                 {
-                    float radiusSquared = x * x + y * y + z * z;
+                    int radiusSquared = x * x + y * y + z * z;
                     if (radiusSquared > maxRadiusSquared) continue;
                     activateChunk(playerChunk.x + x, playerChunk.y + y, playerChunk.z + z);
                 }
+            }
+        }
+        // deactivate chunks
+        for (int i = 0; i < activeChunks.size();i++)
+        {
+            glm::ivec3 chunkPos = activeChunks[i]->returnChunkCoords();
+            glm::ivec3 delta = playerChunk - chunkPos;
+            int distanceSquared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+            if (distanceSquared >= maxRadiusSquared);
+            {
+                deactivateChunk(chunkPos.x, chunkPos.y, chunkPos.z);
             }
         }
 
@@ -317,8 +265,11 @@ void World::activateChunk(int xChunk, int yChunk, int zChunk)
         return;
     }
     chunk->vectorIndex = activeChunks.size();
-    activeChunks.push_back(chunk);
     chunk->isActive = true;
+    World::push_chunk_vertex_data(xChunk, yChunk, zChunk);
+    World::push_chunk_compute_data(xChunk, yChunk, zChunk);
+    activeChunks.push_back(chunk);
+    
 }
 
 void World::deactivateChunk(int xChunk, int yChunk, int zChunk)
@@ -331,10 +282,11 @@ void World::deactivateChunk(int xChunk, int yChunk, int zChunk)
     }
     if (chunk->isActive == false)
     {
-        std::cout << "The chunk is already deaactivated: " << " X: " << xChunk << " Y: " << yChunk << " Z: " << zChunk << '\n';
+        std::cout << "The chunk is already deactivated: " << " X: " << xChunk << " Y: " << yChunk << " Z: " << zChunk << '\n';
         return;
     }
     World::delete_chunk_vertex_data(xChunk, yChunk, zChunk);
+    World::delete_chunk_compute_data(xChunk, yChunk, zChunk);
     Chunk* lastChunk = activeChunks.back();
     activeChunks[chunk->vectorIndex] = lastChunk;
     lastChunk->vectorIndex = chunk->vectorIndex;

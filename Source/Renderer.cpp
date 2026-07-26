@@ -54,7 +54,7 @@ void Render::initWindow()
 	glClearDepth(0.0);
 	glViewport(0, 0, Settings::width, Settings::height);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	camera.init(glm::vec3(-Settings::BLOCK_COUNT_X - 2, -Settings::BLOCK_COUNT_Y, -Settings::BLOCK_COUNT_Z), glm::vec3(1.0f, 0.0f, 0.0f), Settings::walkspeed, Settings::fov);
+	camera.init(glm::vec3(0.0f, 0.0f,0.0f), glm::vec3(1.0f, 0.0f, 0.0f), Settings::walkspeed, Settings::fov);
 
 	///////////////////
 	// We register the callback functions after we've created the window and before the render loop is initiated.

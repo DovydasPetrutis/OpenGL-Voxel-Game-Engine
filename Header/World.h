@@ -11,6 +11,8 @@ struct chunkInput
     uint32_t faceCount;
     uint32_t faceOffset;
     uint32_t pad[2];
+    chunkInput(glm::vec4 worldPos, uint32_t faceCount, uint32_t faceOffset) :
+        worldPos(worldPos), faceCount(faceCount), faceOffset(faceOffset) {};
 };
 
 struct World
@@ -36,9 +38,10 @@ struct World
 
 
     void init();
-    void chunk_face_culling();
     void push_chunk_vertex_data(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk);
+    void push_chunk_compute_data(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk);
     void delete_chunk_vertex_data(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk);
+    void delete_chunk_compute_data(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk);
     void generateFaces(Chunk& data, std::vector<uint32_t>& allFaces, Chunk* front, Chunk* back, Chunk* right, Chunk* left, Chunk* top, Chunk* bottom, int index);
     void generateChunk(uint32_t x,uint32_t y,uint32_t z);
     void generateChunks(Player &player);
