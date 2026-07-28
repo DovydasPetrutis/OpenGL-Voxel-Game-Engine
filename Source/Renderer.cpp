@@ -88,9 +88,8 @@ void Render::initBuffers(World& world)
 
 	// Compute Shader Buffers, visi IMMUTABLE! Isskyrus 2
 
-
-	cullInputBuffer.generate();
-	cullInputBuffer.data(sizeof(chunkInput) * world.chunkComputeData.size(), world.chunkComputeData.data(), GL_DYNAMIC_STORAGE_BIT, 0, true);
+	// cia sustojam, kaip efektyviai copy data, pamasytit max storage, parasyti sasiuvinyje
+	cullInputBuffer.init(sizeof(chunkInput) * world.chunkComputeData.size(), world.chunkComputeData.data(), GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT, 0, true);
 
 	cullOutputBuffer.generate();
 	cullOutputBuffer.data(sizeof(DrawArraysIndirectCommand) * world.chunks.size(), (DrawArraysIndirectCommand*)nullptr, GL_DYNAMIC_STORAGE_BIT, 1, true);
@@ -156,7 +155,7 @@ void Render::initShaders()
 	screenProgram.init("./Resource/Shaders/Rendering/Screen/screenVertex.vert", "./Resource/Shaders/Rendering/Screen/screenFragment.frag", "Screen");
 	TAAProgram.init("./Resource/Shaders/TAA/taaVertex.vert", "./Resource/Shaders/TAA/taaFragment.frag", "TAA");
 	outlineProgram.init("./Resource/Shaders/Rendering/Outline/outlineVertex.vert", "./Resource/Shaders/Rendering/Outline/outlineFragment.frag", "Outline");
-	cullProgram.init("./Resource/Shaders/frustumCulling.comp");
+	cullProgram.init("./Resource/Shaders/Frustrum Culling/frustumCulling.comp");
 	context.set(&cullProgram, &program, &screenProgram, &TAAProgram, &camera, Settings::width / 2, Settings::height / 2, true);
 	glfwSetWindowUserPointer(window, &context);
 

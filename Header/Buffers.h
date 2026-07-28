@@ -47,26 +47,48 @@ public:
 	void bindVBO(VBOinfo VBOAndAttributes);
 };
 
+template <typename T>
 class SSBO
 {
 public:
 	GLuint id;
+	GLbitfield flags = 0;
+	int size = 0;
 	bool isImmutable = false;
-	void generate();
-	template <typename T>
-	void data(unsigned int size, const T* data, GLenum usage, unsigned int bindingPoint,bool isImmutable)
+	T* mappedBuffer = nullptr; // T is data type, like chunkInput or DrawArraysIndirect
+	void init(unsigned int size,const T* data, GLbitfield usage, unsigned int bindingPoint,bool isImmutable)
 	{
+		glCreateBuffers(1, &id);
 		this->isImmutable = isImmutable;
+		this->size = size;
+		flags = usage;
 		if (isImmutable)
 		{
-			glNamedBufferStorage(id, size, data, usage);
+			glNamedBufferStorage(id, size,NULL, usage);
 		}
 		else
 		{
-			glNamedBufferData(id, size, data, usage);
+			glNamedBufferData(id, size, NULL, usage);
 		}
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, bindingPoint, id);
+		mappedBuffer = (T*)glMapNamedBufferRange(ssbo, 0, size, usage);
 		
+	}
+	void update_data(const T& data)
+	{
+		if (data.size() > size)
+		{
+			std::cout << "Too much SSBO data, can't update: max count: " << size << " actual amount: " << data.size() << '\n';
+			return;
+		}
+		if (isImmutable)
+		{
+			std::memcpy(mappedBuffer, data, data.size() * sizeof(T));
+			if ((flags & GL_MAP_FLUSH_EXPLICIT_BIT) != 0)
+			{
+				glFlushMappedNamedBufferRange(ssbo, 0, data.size() * sizeof(T));
+			}
+		}
 	}
 	
 };

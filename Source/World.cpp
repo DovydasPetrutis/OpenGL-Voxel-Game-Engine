@@ -13,7 +13,7 @@ void World::generateChunk(uint32_t x, uint32_t y, uint32_t z)
 // problem su ssbos kolkas
 void World::init()
 {
-    int chunkVolume = 4 * Settings::RENDER_DISTANCE * Settings::RENDER_DISTANCE * Settings::RENDER_DISTANCE / 3;
+    int chunkVolume = 4 * PI * Settings::RENDER_DISTANCE * Settings::RENDER_DISTANCE * Settings::RENDER_DISTANCE / 3;
     /*
     for (int i = -Settings::CHUNK_COUNT_Z / 2; i < Settings::CHUNK_COUNT_Z / 2; i++)
     {

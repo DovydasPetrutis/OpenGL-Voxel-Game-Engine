@@ -29,31 +29,34 @@
       <UniqueIdentifier>{d8fc4968-5bdd-42d6-ba25-49326408b3a6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resource Files\Shaders">
-      <UniqueIdentifier>{d09b4ace-066b-4bfe-90df-723f88a1f722}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Shaders\TAA">
-      <UniqueIdentifier>{c4b85e82-a115-41a4-a3d9-20590d4a746b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Shaders\UI">
-      <UniqueIdentifier>{fd886a8a-ee0f-4190-81da-cf6fef2aa50c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Shaders\UI\Text">
-      <UniqueIdentifier>{caf8cac2-c6f9-41b4-80fe-6f6a624e97f3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Shaders\UI\HUD">
-      <UniqueIdentifier>{b256a733-f2ad-4ee3-a150-778e2bdd46a1}</UniqueIdentifier>
+      <UniqueIdentifier>{99951364-ba17-48b3-a7a1-41d851f30699}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resource Files\Shaders\Rendering">
-      <UniqueIdentifier>{d71d9e1f-62e5-4482-91cd-6dd3415a3ba3}</UniqueIdentifier>
+      <UniqueIdentifier>{1bfd8752-eca5-4206-b2dc-d339ab51b019}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Shaders\Rendering\FragmentStuff">
-      <UniqueIdentifier>{17306cc2-029c-4359-ad05-d9649546640f}</UniqueIdentifier>
+    <Filter Include="Resource Files\Shaders\TAA">
+      <UniqueIdentifier>{7c821c57-9b75-4784-b3bc-e11124a9ca85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\UI">
+      <UniqueIdentifier>{381372e6-7447-421f-9d10-180bb0c55311}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Frustrum Culling">
+      <UniqueIdentifier>{0854a654-9a60-4c7b-8c8b-cfd526851543}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\UI\HUD">
+      <UniqueIdentifier>{e153f03f-68b6-4fe8-9c38-28b295030717}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\UI\Text">
+      <UniqueIdentifier>{ea982bd8-06fc-4872-baf8-1eec65dad734}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Rendering\Everything">
+      <UniqueIdentifier>{18c7d74b-2c34-494d-9601-4b2ccc31559c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resource Files\Shaders\Rendering\Outline">
-      <UniqueIdentifier>{7d2ee5ae-fe2e-411a-ba8d-f48e73438c29}</UniqueIdentifier>
+      <UniqueIdentifier>{d7d36e9a-6847-4b30-b5bd-f6904ffc1198}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Shaders\Rendering\Outline\Screen">
-      <UniqueIdentifier>{070b7d7c-b72d-4496-bbc7-c24df8980df6}</UniqueIdentifier>
+    <Filter Include="Resource Files\Shaders\Rendering\Screen">
+      <UniqueIdentifier>{95d960ce-46ef-48ab-9080-33e16a6ebf96}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -142,44 +145,44 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\frustumCulling.comp">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\Rendering\Everything\fragmentShader.frag">
-      <Filter>Resource Files\Shaders\Rendering\FragmentStuff</Filter>
-    </None>
-    <None Include="Shaders\Rendering\Everything\vertexShader.vert">
-      <Filter>Resource Files\Shaders\Rendering\FragmentStuff</Filter>
-    </None>
-    <None Include="Shaders\Rendering\Screen\screenFragment.frag">
-      <Filter>Resource Files\Shaders\Rendering\Outline\Screen</Filter>
-    </None>
-    <None Include="Shaders\Rendering\Screen\screenVertex.vert">
-      <Filter>Resource Files\Shaders\Rendering\Outline\Screen</Filter>
-    </None>
-    <None Include="Shaders\UI\HUD\hudfragment.frag">
-      <Filter>Resource Files\Shaders\UI\HUD</Filter>
-    </None>
-    <None Include="Shaders\UI\HUD\hudVertex.vert">
-      <Filter>Resource Files\Shaders\UI\HUD</Filter>
-    </None>
-    <None Include="Shaders\UI\Text\textFragment.frag">
-      <Filter>Resource Files\Shaders\UI\Text</Filter>
-    </None>
-    <None Include="Shaders\UI\Text\textVertex.vert">
-      <Filter>Resource Files\Shaders\UI\Text</Filter>
-    </None>
-    <None Include="Shaders\TAA\taaVertex.vert">
+    <None Include="Resource\Shaders\TAA\taaFragment.frag">
       <Filter>Resource Files\Shaders\TAA</Filter>
     </None>
-    <None Include="Shaders\Rendering\Outline\outlineFragment.frag">
-      <Filter>Resource Files\Shaders\Rendering\Outline</Filter>
-    </None>
-    <None Include="Shaders\Rendering\Outline\outlineVertex.vert">
-      <Filter>Resource Files\Shaders\Rendering\Outline</Filter>
-    </None>
-    <None Include="Shaders\TAA\taaFragment.frag">
+    <None Include="Resource\Shaders\TAA\taaVertex.vert">
       <Filter>Resource Files\Shaders\TAA</Filter>
+    </None>
+    <None Include="Resource\Shaders\Frustrum Culling\frustumCulling.comp">
+      <Filter>Resource Files\Shaders\Frustrum Culling</Filter>
+    </None>
+    <None Include="Resource\Shaders\UI\HUD\hudfragment.frag">
+      <Filter>Resource Files\Shaders\UI\HUD</Filter>
+    </None>
+    <None Include="Resource\Shaders\UI\HUD\hudVertex.vert">
+      <Filter>Resource Files\Shaders\UI\HUD</Filter>
+    </None>
+    <None Include="Resource\Shaders\UI\Text\textFragment.frag">
+      <Filter>Resource Files\Shaders\UI\Text</Filter>
+    </None>
+    <None Include="Resource\Shaders\UI\Text\textVertex.vert">
+      <Filter>Resource Files\Shaders\UI\Text</Filter>
+    </None>
+    <None Include="Resource\Shaders\Rendering\Everything\fragmentShader.frag">
+      <Filter>Resource Files\Shaders\Rendering\Everything</Filter>
+    </None>
+    <None Include="Resource\Shaders\Rendering\Everything\vertexShader.vert">
+      <Filter>Resource Files\Shaders\Rendering\Everything</Filter>
+    </None>
+    <None Include="Resource\Shaders\Rendering\Outline\outlineFragment.frag">
+      <Filter>Resource Files\Shaders\Rendering\Outline</Filter>
+    </None>
+    <None Include="Resource\Shaders\Rendering\Outline\outlineVertex.vert">
+      <Filter>Resource Files\Shaders\Rendering\Outline</Filter>
+    </None>
+    <None Include="Resource\Shaders\Rendering\Screen\screenFragment.frag">
+      <Filter>Resource Files\Shaders\Rendering\Screen</Filter>
+    </None>
+    <None Include="Resource\Shaders\Rendering\Screen\screenVertex.vert">
+      <Filter>Resource Files\Shaders\Rendering\Screen</Filter>
     </None>
   </ItemGroup>
 </Project>

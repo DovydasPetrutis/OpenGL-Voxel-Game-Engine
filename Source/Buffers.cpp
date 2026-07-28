@@ -27,8 +27,3 @@ void VBO::generate()
 {
 	glCreateBuffers(1, &id);
 }
-
-void SSBO::generate()
-{
-	glCreateBuffers(1, &id);
-}
