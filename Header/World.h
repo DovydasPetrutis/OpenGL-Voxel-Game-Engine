@@ -36,7 +36,7 @@ struct World
     std::vector<chunkInput> chunkComputeData;
     glm::vec3 previousPlayerChunkPos = glm::vec3(0.0f);
     uint64_t faceOffset = 0;
-
+    
 
     void init();
     void push_chunk_vertex_data(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk);

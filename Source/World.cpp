@@ -44,6 +44,9 @@ void World::push_chunk_vertex_data(uint32_t xChunk, uint32_t yChunk, uint32_t zC
     Chunk* bottomChunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk - 1, zChunk, true);
     Chunk* frontChunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk, zChunk + 1, true);
     Chunk* behindChunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk, zChunk - 1, true);
+    // repeating funkcijos apacioj, noriu pakeisti
+    
+
     // Optimisation, preocmpute bool values
 
     for (uint8_t z = 0; z < 16;z++)
@@ -53,6 +56,26 @@ void World::push_chunk_vertex_data(uint32_t xChunk, uint32_t yChunk, uint32_t zC
             for (uint8_t x = 0; x < 16;x++)
             {
                 uint16_t id = chunk->getId(x, y, z);
+                auto push_data = [this,x,y,z,id,&chunk,&frontChunk](int sideBlockID, int sideOtherChunkID,uint8_t side) 
+                {
+                    bool showFace = false;
+                    if (z != 0) showFace = (sideBlockID == 0);
+                    else        showFace = (sideOtherChunkID == 0);
+
+                    if (showFace)
+                    {
+                        faceCoordsandData.push_back(packFace(x, y, z, side, textureMap[id][side]));
+                        chunk->faceCount += 1;
+                    }
+                };
+                // New addition
+                push_data(chunk->getId(x, y, z - 1), frontChunk->getId(x, y, 15), 0); // Front
+                push_data(chunk->getId(x, y, z + 1), frontChunk->getId(x, y, 0), 1); // Back
+                push_data(chunk->getId(x + 1, y, z), frontChunk->getId(0, y, z), 2); // Right
+                push_data(chunk->getId(x - 1, y, z), frontChunk->getId(15, y, z), 3); // Left
+                push_data(chunk->getId(x, y + 1, z), frontChunk->getId(x, 0, z), 4); // Top
+                push_data(chunk->getId(x, y - 1, z), frontChunk->getId(x, 15, z), 5); // Bottom
+                /*
                 // Front 
                 {
                     bool showFace = false;
@@ -125,6 +148,7 @@ void World::push_chunk_vertex_data(uint32_t xChunk, uint32_t yChunk, uint32_t zC
                         chunk->faceCount += 1;
                     }
                 }
+                */
             }
         }
     }

@@ -89,6 +89,9 @@ void Render::initBuffers(World& world)
 	// Compute Shader Buffers, visi IMMUTABLE! Isskyrus 2
 
 	// cia sustojam, kaip efektyviai copy data, pamasytit max storage, parasyti sasiuvinyje
+
+
+
 	cullInputBuffer.init(sizeof(chunkInput) * world.chunkComputeData.size(), world.chunkComputeData.data(), GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT, 0, true);
 
 	cullOutputBuffer.generate();
