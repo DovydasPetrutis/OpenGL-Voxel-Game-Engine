@@ -142,43 +142,43 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\frustumCulling.comp">
+    <None Include="Resource\Shaders\frustumCulling.comp">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="Shaders\Rendering\Everything\fragmentShader.frag">
+    <None Include="Resource\Shaders\Rendering\Everything\fragmentShader.frag">
       <Filter>Resource Files\Shaders\Rendering\FragmentStuff</Filter>
     </None>
-    <None Include="Shaders\Rendering\Everything\vertexShader.vert">
+    <None Include="Resource\Shaders\Rendering\Everything\vertexShader.vert">
       <Filter>Resource Files\Shaders\Rendering\FragmentStuff</Filter>
     </None>
-    <None Include="Shaders\Rendering\Screen\screenFragment.frag">
+    <None Include="Resource\Shaders\Rendering\Screen\screenFragment.frag">
       <Filter>Resource Files\Shaders\Rendering\Screen</Filter>
     </None>
-    <None Include="Shaders\Rendering\Screen\screenVertex.vert">
+    <None Include="Resource\Shaders\Rendering\Screen\screenVertex.vert">
       <Filter>Resource Files\Shaders\Rendering\Screen</Filter>
     </None>
-    <None Include="Shaders\UI\HUD\hudfragment.frag">
+    <None Include="Resource\Shaders\UI\HUD\hudfragment.frag">
       <Filter>Resource Files\Shaders\UI\HUD</Filter>
     </None>
-    <None Include="Shaders\UI\HUD\hudVertex.vert">
+    <None Include="Resource\Shaders\UI\HUD\hudVertex.vert">
       <Filter>Resource Files\Shaders\UI\HUD</Filter>
     </None>
-    <None Include="Shaders\UI\Text\textFragment.frag">
+    <None Include="Resource\Shaders\UI\Text\textFragment.frag">
       <Filter>Resource Files\Shaders\UI\Text</Filter>
     </None>
-    <None Include="Shaders\UI\Text\textVertex.vert">
+    <None Include="Resource\Shaders\UI\Text\textVertex.vert">
       <Filter>Resource Files\Shaders\UI\Text</Filter>
     </None>
-    <None Include="Shaders\TAA\taaVertex.vert">
+    <None Include="Resource\Shaders\TAA\taaVertex.vert">
       <Filter>Resource Files\Shaders\TAA</Filter>
     </None>
-    <None Include="Shaders\Rendering\Outline\outlineFragment.frag">
+    <None Include="Resource\Shaders\Rendering\Outline\outlineFragment.frag">
       <Filter>Resource Files\Shaders\Rendering\Outline</Filter>
     </None>
-    <None Include="Shaders\Rendering\Outline\outlineVertex.vert">
+    <None Include="Resource\Shaders\Rendering\Outline\outlineVertex.vert">
       <Filter>Resource Files\Shaders\Rendering\Outline</Filter>
     </None>
-    <None Include="Shaders\TAA\taaFragment.frag">
+    <None Include="Resource\Shaders\TAA\taaFragment.frag">
       <Filter>Resource Files\Shaders\TAA</Filter>
     </None>
   </ItemGroup>
