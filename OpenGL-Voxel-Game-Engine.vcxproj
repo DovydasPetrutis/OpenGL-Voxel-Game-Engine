@@ -183,19 +183,19 @@
     <ClInclude Include="Header\World.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\frustumCulling.comp" />
-    <None Include="Shaders\Rendering\Everything\fragmentShader.frag" />
-    <None Include="Shaders\Rendering\Everything\vertexShader.vert" />
-    <None Include="Shaders\Rendering\Outline\outlineFragment.frag" />
-    <None Include="Shaders\Rendering\Outline\outlineVertex.vert" />
-    <None Include="Shaders\Rendering\Screen\screenFragment.frag" />
-    <None Include="Shaders\Rendering\Screen\screenVertex.vert" />
-    <None Include="Shaders\TAA\taaFragment.frag" />
-    <None Include="Shaders\TAA\taaVertex.vert" />
-    <None Include="Shaders\UI\HUD\hudfragment.frag" />
-    <None Include="Shaders\UI\HUD\hudVertex.vert" />
-    <None Include="Shaders\UI\Text\textFragment.frag" />
-    <None Include="Shaders\UI\Text\textVertex.vert" />
+    <None Include="Resource\Shaders\frustumCulling.comp" />
+    <None Include="Resource\Shaders\Rendering\Everything\fragmentShader.frag" />
+    <None Include="Resource\Shaders\Rendering\Everything\vertexShader.vert" />
+    <None Include="Resource\Shaders\Rendering\Outline\outlineFragment.frag" />
+    <None Include="Resource\Shaders\Rendering\Outline\outlineVertex.vert" />
+    <None Include="Resource\Shaders\Rendering\Screen\screenFragment.frag" />
+    <None Include="Resource\Shaders\Rendering\Screen\screenVertex.vert" />
+    <None Include="Resource\Shaders\TAA\taaFragment.frag" />
+    <None Include="Resource\Shaders\TAA\taaVertex.vert" />
+    <None Include="Resource\Shaders\UI\HUD\hudfragment.frag" />
+    <None Include="Resource\Shaders\UI\HUD\hudVertex.vert" />
+    <None Include="Resource\Shaders\UI\Text\textFragment.frag" />
+    <None Include="Resource\Shaders\UI\Text\textVertex.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
