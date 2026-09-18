@@ -94,20 +94,15 @@ void Render::initBuffers(World& world)
 
 	cullInputBuffer.init(sizeof(chunkInput) * world.chunkComputeData.size(), world.chunkComputeData.data(), GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT, 0, true);
 
-	cullOutputBuffer.generate();
-	cullOutputBuffer.data(sizeof(DrawArraysIndirectCommand) * world.chunks.size(), (DrawArraysIndirectCommand*)nullptr, GL_DYNAMIC_STORAGE_BIT, 1, true);
+	cullOutputBuffer.init(sizeof(DrawArraysIndirectCommand) * world.chunks.size(), (DrawArraysIndirectCommand*)nullptr, GL_DYNAMIC_STORAGE_BIT, 1, true);
 
-	cullCountBuffer.generate();
-	cullCountBuffer.data(sizeof(uint32_t), (uint32_t*)nullptr, GL_STREAM_COPY, 2, false);
+	cullCountBuffer.init(sizeof(uint32_t), (uint32_t*)nullptr, GL_STREAM_COPY, 2, false);
 
-	VBOfaces.generate();
-	VBOfaces.data(sizeof(uint32_t) * world.faceCoordsandData.size(), world.faceCoordsandData.data(), GL_DYNAMIC_STORAGE_BIT, 3, true);
+	VBOfaces.init(sizeof(uint32_t) * world.faceCoordsandData.size(), world.faceCoordsandData.data(), GL_DYNAMIC_STORAGE_BIT, 3, true);
 
-	mappingBuffer.generate();
-	mappingBuffer.data(sizeof(uint32_t) * world.chunks.size(), (uint32_t*)nullptr, GL_DYNAMIC_STORAGE_BIT, 4, true);
+	mappingBuffer.init(sizeof(uint32_t) * world.chunks.size(), (uint32_t*)nullptr, GL_DYNAMIC_STORAGE_BIT, 4, true);
 
-	textBuffer.generate();
-	textBuffer.data(100000 * sizeof(glyphVertex), (glyphVertex*)nullptr, GL_DYNAMIC_STORAGE_BIT, 5, true);
+	textBuffer.init(100000 * sizeof(glyphVertex), (glyphVertex*)nullptr, GL_DYNAMIC_STORAGE_BIT, 5, true);
 
 	// Framebuffers
 

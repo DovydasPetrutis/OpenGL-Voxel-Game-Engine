@@ -1,7 +1,9 @@
 #pragma once
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <iostream>
 #include <functional>
+#include <span>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -56,6 +58,7 @@ public:
 	int size = 0;
 	bool isImmutable = false;
 	T* mappedBuffer = nullptr; // T is data type, like chunkInput or DrawArraysIndirect
+
 	void init(unsigned int size,const T* data, GLbitfield usage, unsigned int bindingPoint,bool isImmutable)
 	{
 		glCreateBuffers(1, &id);
@@ -71,23 +74,29 @@ public:
 			glNamedBufferData(id, size, NULL, usage);
 		}
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, bindingPoint, id);
-		mappedBuffer = (T*)glMapNamedBufferRange(ssbo, 0, size, usage);
+		mappedBuffer = static_cast<T*>(glMapNamedBufferRange(id, 0, size, usage));
 		
 	}
-	void update_data(const T& data)
+	void update_data(std::span<const T> data)
 	{
 		if (data.size() > size)
 		{
 			std::cout << "Too much SSBO data, can't update: max count: " << size << " actual amount: " << data.size() << '\n';
 			return;
 		}
+
+		uint32_t bytes = data.size_bytes();
 		if (isImmutable)
 		{
-			std::memcpy(mappedBuffer, data, data.size() * sizeof(T));
+			std::memcpy(mappedBuffer, data.data(), bytes);
 			if ((flags & GL_MAP_FLUSH_EXPLICIT_BIT) != 0)
 			{
-				glFlushMappedNamedBufferRange(ssbo, 0, data.size() * sizeof(T));
+				glFlushMappedNamedBufferRange(id, 0, bytes);
 			}
+		}
+		else
+		{
+			glNamedBufferSubData(id, 0, bytes, data.data());
 		}
 	}
 	

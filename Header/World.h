@@ -1,8 +1,9 @@
 #pragma once
-inline long double PI = acos(0.0f) * 2.0L;
 #include <vector>
 #include <unordered_map>
 #include "Chunk.h"
+inline long double PI = acos(0.0f) * 2.0L;
+
 
 class Player;
 

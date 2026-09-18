@@ -63,13 +63,13 @@ public:
     VBO VBOoutline;
     VBO prevVBOoutline;
 
-    SSBO VBOfaces;
-    SSBO cullInputBuffer;
-    SSBO cullOutputBuffer;
-    SSBO cullCountBuffer;
-    SSBO mappingBuffer;
+    SSBO<uint32_t> VBOfaces;
+    SSBO<chunkInput> cullInputBuffer;
+    SSBO<DrawArraysIndirectCommand> cullOutputBuffer;
+    SSBO<uint32_t> cullCountBuffer;
+    SSBO<uint32_t> mappingBuffer;
 
-    SSBO textBuffer;
+    SSBO<glyphVertex> textBuffer;
     
     Texture previousVelocityTex;
     Framebuffer mainFBO;
