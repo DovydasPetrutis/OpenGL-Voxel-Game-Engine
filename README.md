@@ -56,7 +56,7 @@ RAM: 32 GB
 - CPU: AMD Ryzen 5 7600X
 - RAM: 32 GB
 
-- (chunk is a 16x16x16 blocks region)
+(chunk is a 16x16x16 blocks region)
 **10x10x10 chunks cube:**
 
 <img width="2559" height="1439" alt="10x10x10" src="https://github.com/user-attachments/assets/cffa177c-41d8-48cc-a60a-14ac7172c766" />
