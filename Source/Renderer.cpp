@@ -90,9 +90,10 @@ void Render::initBuffers(World& world)
 
 	// cia sustojam, kaip efektyviai copy data, pamasytit max storage, parasyti sasiuvinyje
 
+	uint64_t maxChunkCount = Utils::calculate_sphere_block_count(Settings::RENDER_DISTANCE);
+	uint64_t chunkOutputCount = maxChunkCount; // cia pabaigti reikia
 
-
-	cullInputBuffer.init(sizeof(chunkInput) * world.chunkComputeData.size(), world.chunkComputeData.data(), GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT, 0, true);
+	cullInputBuffer.init(sizeof(chunkInput) * maxChunkCount, world.chunkComputeData.data(), GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT, 0, true);
 
 	cullOutputBuffer.init(sizeof(DrawArraysIndirectCommand) * world.chunks.size(), (DrawArraysIndirectCommand*)nullptr, GL_DYNAMIC_STORAGE_BIT, 1, true);
 
@@ -472,6 +473,7 @@ void Render::renderHUD(Player& player)
 
 void Render::renderMiscEnd()
 {
+	std::cout << Utils::calculate_sphere_block_count(10) << std::endl;
 	glfwPollEvents();
 	glfwSwapBuffers(window);
 }

@@ -243,12 +243,12 @@ void World::generateChunks(Player& player)
         int maxRadius = Settings::RENDER_DISTANCE;
         int maxRadiusSquared = maxRadius * maxRadius;
         glm::ivec3 playerChunk = glm::ivec3(static_cast<int>(player.pos.x) / 16, static_cast<int>(player.pos.y) / 16, static_cast<int>(player.pos.z) / 16);
-        // acitvate chunks
-        for (int z = 0; z < maxRadius;z++)
+        // acitvate chunk
+        for (int z = -maxRadius; z <= maxRadius;z++)
         {
-            for (int y = 0; y < maxRadius;y++)
+            for (int y = -maxRadius; y <= maxRadius;y++)
             {
-                for (int x = 0; x < maxRadius;x++)
+                for (int x = -maxRadius; x <= maxRadius;x++)
                 {
                     int radiusSquared = x * x + y * y + z * z;
                     if (radiusSquared > maxRadiusSquared) continue;

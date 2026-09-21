@@ -24,4 +24,5 @@ public:
 	static uint16_t MortonEncode16t(uint16_t x, uint16_t y, uint16_t z);
 	static uint32_t xyz_to_Morton32t(uint16_t x, uint16_t y, uint16_t z);
 	static glm::ivec3 Morton32t_to_xyz(uint32_t m);
+	static uint32_t calculate_sphere_block_count(int32_t radius);
 };

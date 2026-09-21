@@ -111,3 +111,25 @@ glm::ivec3 Utils::Morton32t_to_xyz(uint32_t m)
         compactBy2(m >> 2)
     };
 }
+
+uint32_t Utils::calculate_sphere_block_count(int32_t radius)
+{
+    // This may be inefficient, but is straightforward
+    int32_t maxDistanceSquared = radius * radius;
+    int32_t count = 0;
+    for (int16_t x = -radius; x <= radius;x++)
+    {
+        for (int16_t y = -radius; y <= radius;y++)
+        {
+            for (int16_t z = -radius; z <= radius;z++)
+            {
+                int32_t distanceSquared = x * x + y * y + z * z;
+                if (distanceSquared <= maxDistanceSquared)
+                {
+                    count++;
+                }
+            }
+        }
+    }
+    return count;
+}
