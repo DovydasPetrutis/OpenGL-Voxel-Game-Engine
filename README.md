@@ -56,13 +56,14 @@ RAM: 32 GB
 - CPU: AMD Ryzen 5 7600X
 - RAM: 32 GB
 
-**10x10x10 cube:**
+- (chunk is a 16x16x16 blocks region)
+**10x10x10 chunks cube:**
 
 <img width="2559" height="1439" alt="10x10x10" src="https://github.com/user-attachments/assets/cffa177c-41d8-48cc-a60a-14ac7172c766" />
 
 RAM usage: 600 MB
 
-**100x100x100 cube:**
+**100x100x100 chunks cube:**
 
 <img width="2559" height="1439" alt="100x100x100" src="https://github.com/user-attachments/assets/62cb4abc-bd9c-4e44-bd13-ad2e3df9b13d" />
 
