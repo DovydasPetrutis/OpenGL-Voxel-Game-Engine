@@ -90,18 +90,18 @@ void Render::initBuffers(World& world)
 
 	// cia sustojam, kaip efektyviai copy data, pamasytit max storage, parasyti sasiuvinyje
 
-	uint64_t maxChunkCount = Utils::calculate_sphere_block_count(Settings::RENDER_DISTANCE);
-	uint64_t chunkOutputCount = maxChunkCount; // cia pabaigti reikia
+	uint64_t maxChunkInputCount = Utils::calculate_sphere_block_count(Settings::RENDER_DISTANCE);
+	uint64_t maxChunkOutputCount = maxChunkInputCount * Settings::aspect_ratio * glm::pow(glm::radians(Settings::fov / 2.0f),2) + 1; // cia pabaigti reikia
 
-	cullInputBuffer.init(sizeof(chunkInput) * maxChunkCount, world.chunkComputeData.data(), GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT, 0, true);
+	cullInputBuffer.init(sizeof(chunkInput) * maxChunkOutputCount, world.chunkComputeData.data(), GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT, 0, true);
 
-	cullOutputBuffer.init(sizeof(DrawArraysIndirectCommand) * world.chunks.size(), (DrawArraysIndirectCommand*)nullptr, GL_DYNAMIC_STORAGE_BIT, 1, true);
+	cullOutputBuffer.init(sizeof(DrawArraysIndirectCommand) * maxChunkOutputCount, (DrawArraysIndirectCommand*)nullptr, GL_DYNAMIC_STORAGE_BIT, 1, true);
 
-	cullCountBuffer.init(sizeof(uint32_t), (uint32_t*)nullptr, GL_STREAM_COPY, 2, false);
+	cullCountBuffer.init(sizeof(uint32_t) * maxChunkInputCount, (uint32_t*)nullptr, GL_STREAM_COPY, 2, false);
 
-	VBOfaces.init(sizeof(uint32_t) * world.faceCoordsandData.size(), world.faceCoordsandData.data(), GL_DYNAMIC_STORAGE_BIT, 3, true);
+	VBOfaces.init(sizeof(uint32_t) * maxChunkOutputCount * 2048 * 6, world.faceCoordsandData.data(), GL_DYNAMIC_STORAGE_BIT, 3, true);
 
-	mappingBuffer.init(sizeof(uint32_t) * world.chunks.size(), (uint32_t*)nullptr, GL_DYNAMIC_STORAGE_BIT, 4, true);
+	mappingBuffer.init(sizeof(uint32_t) * maxChunkOutputCount, (uint32_t*)nullptr, GL_DYNAMIC_STORAGE_BIT, 4, true);
 
 	textBuffer.init(100000 * sizeof(glyphVertex), (glyphVertex*)nullptr, GL_DYNAMIC_STORAGE_BIT, 5, true);
 

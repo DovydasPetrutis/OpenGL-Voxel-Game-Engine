@@ -2,10 +2,10 @@
 #include "Player.h"
 
 
-
-void World::generateChunk(uint32_t x, uint32_t y, uint32_t z)
+// sutvarkyti indexavima
+void World::generateChunk(int32_t xChunk, int32_t yChunk, int32_t zChunk)
 {
-    uint64_t index = x + y * Settings::CHUNK_COUNT_X_REAL + Settings::CHUNK_COUNT_X_REAL * Settings::CHUNK_COUNT_Y_REAL * z;
+    uint64_t index = x + y * Settings::CHUNK_COUNT_X + Settings::CHUNK_COUNT_X * Settings::CHUNK_COUNT_Y * z;
     chunks.emplace(index, Chunk(x));
     chunks.at(index).id = index;
 }
@@ -13,7 +13,20 @@ void World::generateChunk(uint32_t x, uint32_t y, uint32_t z)
 // problem su ssbos kolkas
 void World::init()
 {
-    int chunkVolume = 4 * PI * Settings::RENDER_DISTANCE * Settings::RENDER_DISTANCE * Settings::RENDER_DISTANCE / 3;
+    int rd = Settings::RENDER_DISTANCE;
+    float maxDistanceSquared = rd * rd;
+    for (int x = 0; x < 1;x++)
+    {
+        for (int y = 0;y < 1;y++)
+        {
+            for (int z = 0; z < 1;z++)
+            {
+                float distance = x * x + y * y + z * z;
+                if (distance > maxDistanceSquared) continue;
+                activateChunk(x, y, z);
+            }
+        }
+    }
     /*
     for (int i = -Settings::CHUNK_COUNT_Z / 2; i < Settings::CHUNK_COUNT_Z / 2; i++)
     {
@@ -30,7 +43,7 @@ void World::init()
 
 
 
-void World::push_chunk_vertex_data(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk)
+void World::push_chunk_vertex_data(int32_t xChunk, int32_t yChunk, int32_t zChunk)
 {
     Chunk* chunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk, zChunk,true);
     if (chunk == nullptr)
@@ -157,13 +170,13 @@ void World::push_chunk_vertex_data(uint32_t xChunk, uint32_t yChunk, uint32_t zC
 
 }
 
-void World::push_chunk_compute_data(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk)
+void World::push_chunk_compute_data(int32_t xChunk, int32_t yChunk, int32_t zChunk)
 {
     const Chunk* chunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk, zChunk, false);
     chunkComputeData.emplace_back(glm::vec4(xChunk * 16.0f, yChunk * 16.0f, zChunk * 16.0f, 1.0f), chunk->faceCount, chunk->faceOffset);
 }
 
-void World::delete_chunk_vertex_data(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk)
+void World::delete_chunk_vertex_data(int32_t xChunk, int32_t yChunk, int32_t zChunk)
 {
     // delete
     Chunk* chunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk, zChunk, false);
@@ -181,7 +194,7 @@ void World::delete_chunk_vertex_data(uint32_t xChunk, uint32_t yChunk, uint32_t 
     }
 }
 
-void World::delete_chunk_compute_data(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk)
+void World::delete_chunk_compute_data(int32_t xChunk, int32_t yChunk, int32_t zChunk)
 {
     const Chunk* chunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk, zChunk, false);
     chunkComputeData[chunk->vectorIndex] = chunkComputeData.back();
@@ -275,7 +288,7 @@ void World::generateChunks(Player& player)
     }
 }
 
-void World::activateChunk(int xChunk, int yChunk, int zChunk)
+void World::activateChunk(int32_t xChunk, int32_t yChunk, int32_t zChunk)
 {
     Chunk* chunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk, zChunk, true);
     if (!chunk)
@@ -296,7 +309,7 @@ void World::activateChunk(int xChunk, int yChunk, int zChunk)
     
 }
 
-void World::deactivateChunk(int xChunk, int yChunk, int zChunk)
+void World::deactivateChunk(int32_t xChunk, int32_t yChunk, int32_t zChunk)
 {
     // swap and pop method O(1)
     Chunk* chunk = World::returnChunkPointerWithChunkCoords(xChunk, yChunk, zChunk, false);
@@ -344,7 +357,7 @@ Chunk* World::returnChunkWithBlockCoords(int xBlock, int yBlock, int zBlock)
 
 }
 
-Chunk* World::returnChunkPointerWithChunkCoords(int xChunk, int yChunk, int zChunk,bool generateChunkIfNotFound)
+Chunk* World::returnChunkPointerWithChunkCoords(int32_t xChunk, int32_t yChunk, int32_t zChunk,bool generateChunkIfNotFound)
 {
     try
     {

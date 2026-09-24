@@ -32,7 +32,7 @@ struct World
     {7    ,7    ,7    ,7    ,7    ,7    },  // ID:8 Emerald block
     };
     std::vector<uint32_t> faceCoordsandData;
-    std::unordered_map<uint64_t, Chunk> chunks;
+    std::unordered_map<int64_t, Chunk> chunks;
     std::vector<Chunk*> activeChunks;
     std::vector<chunkInput> chunkComputeData;
     glm::vec3 previousPlayerChunkPos = glm::vec3(0.0f);
@@ -40,17 +40,17 @@ struct World
     
 
     void init();
-    void push_chunk_vertex_data(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk);
-    void push_chunk_compute_data(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk);
-    void delete_chunk_vertex_data(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk);
-    void delete_chunk_compute_data(uint32_t xChunk, uint32_t yChunk, uint32_t zChunk);
+    void push_chunk_vertex_data(int32_t xChunk, int32_t yChunk, int32_t zChunk);
+    void push_chunk_compute_data(int32_t xChunk, int32_t yChunk, int32_t zChunk);
+    void delete_chunk_vertex_data(int32_t xChunk, int32_t yChunk, int32_t zChunk);
+    void delete_chunk_compute_data(int32_t xChunk, int32_t yChunk, int32_t zChunk);
     void generateFaces(Chunk& data, std::vector<uint32_t>& allFaces, Chunk* front, Chunk* back, Chunk* right, Chunk* left, Chunk* top, Chunk* bottom, int index);
-    void generateChunk(uint32_t x,uint32_t y,uint32_t z);
+    void generateChunk(int32_t xChunk,int32_t yChunk,int32_t zChunk);
     void generateChunks(Player &player);
-    void activateChunk(int xChunk, int yChunk, int zChunk);
-    void deactivateChunk(int xChunk, int yChunk, int zChunk);
+    void activateChunk(int32_t xChunk, int32_t yChunk, int32_t zChunk);
+    void deactivateChunk(int32_t xChunk, int32_t yChunk, int32_t zChunk);
     Chunk* returnChunkWithBlockCoords(int xBlock, int yBlock, int zBlock);
-    Chunk* returnChunkPointerWithChunkCoords(int xChunk, int yChunk, int zChunk, bool generateChunkIfNotFound);
+    Chunk* returnChunkPointerWithChunkCoords(int32_t xChunk, int32_t yChunk, int32_t zChunk, bool generateChunkIfNotFound);
     int returnBlockID(int xBlock, int yBlock, int zBlock);
     uint32_t packFace(int x, int y, int z, int direction, int id);
 };
